@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tap & Earn - Complete Tasks, Win Rewards</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=pub-4511149915896415" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { light: '#3b82f6', dark: '#1d4ed8' },
+            secondary: { light: '#f97316', dark: '#ea580c' },
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155' },
+            light: { 100: '#f8fafc', 200: '#e2e8f0', 300: '#cbd5e1' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; transition:background-color .3s,color .3s }
+    :root {
+      --primary:#3b82f6; --primary-dark:#1d4ed8;
+      --secondary:#f97316; --secondary-dark:#ea580c;
+      --success:#10b981; --danger:#ef4444; --warning:#f59e0b;
+      --dark-900:#0f172a; --dark-800:#1e293b; --dark-700:#334155;
+      --light-100:#f8fafc; --light-200:#e2e8f0; --light-300:#cbd5e1;
+    }
+    body {
+      background:linear-gradient(135deg,var(--dark-900),var(--dark-800));
+      color:var(--light-100); min-height:100vh; overflow-x:hidden;
+    }
+    body.light-mode {
+      background:linear-gradient(135deg,var(--light-100),var(--light-200));
+      color:var(--dark-900);
+    }
+    .section { display:none; min-height:100vh; padding:2rem; animation:fadeIn .5s ease }
+    #login-section { display:flex }
+    .card {
+      background:rgba(30,41,59,.8); border-radius:20px; backdrop-filter:blur(10px);
+      box-shadow:0 10px 25px rgba(0,0,0,.3); overflow:hidden;
+      border:1px solid rgba(255,255,255,.1);
+    }
+    .light-mode .card {
+      background:rgba(248,250,252,.9); border:1px solid rgba(203,213,225,.3);
+      box-shadow:0 10px 25px rgba(0,0,0,.05);
+    }
+    .task-card {
+      background:rgba(30,41,59,.6); border-radius:16px; overflow:hidden;
+      transition:all .3s; border:1px solid rgba(59,130,246,.3);
+    }
+    .light-mode .task-card { background:rgba(248,250,252,.8); border:1px solid rgba(59,130,246,.2) }
+    .task-card:hover { transform:translateY(-8px); box-shadow:0 15px 30px rgba(0,0,0,.3) }
+    .light-mode .task-card:hover { box-shadow:0 15px 30px rgba(0,0,0,.1) }
+    .task-image-container { position:relative; height:160px; overflow:hidden; border-radius:12px }
+    .task-image-container img { width:100%; height:100%; object-fit:cover; transition:transform .5s ease }
+    .task-card:hover .task-image-container img { transform:scale(1.05) }
+    .points-badge {
+      position:absolute; top:10px; right:10px; background:var(--secondary);
+      color:white; padding:4px 10px; border-radius:20px; font-size:.8rem; font-weight:600; z-index:10;
+    }
+    .light-mode .points-badge { color:var(--dark-900) }
+    .animated-button {
+      background:linear-gradient(45deg,var(--primary),var(--primary-dark));
+      position:relative; overflow:hidden; transition:all .3s;
+    }
+    .animated-button:hover { transform:translateY(-3px); box-shadow:0 10px 20px rgba(0,0,0,.2) }
+    .animated-button:active { transform:translateY(1px) }
+    .animated-button::after {
+      content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+      background:rgba(255,255,255,.1); transform:rotate(30deg); transition:all .5s;
+    }
+    .animated-button:hover::after { transform:rotate(30deg) translate(10%,10%) }
+    .theme-toggle {
+      position:fixed; top:20px; right:20px; width:50px; height:50px;
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      background:rgba(30,41,59,.8); backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.1); cursor:pointer; z-index:1000;
+      box-shadow:0 4px 15px rgba(0,0,0,.2);
+    }
+    .light-mode .theme-toggle {
+      background:rgba(248,250,252,.8); border:1px solid rgba(203,213,225,.3);
+    }
+    .notification {
+      position:fixed; top:20px; right:20px; padding:15px 25px;
+      border-radius:10px; background:var(--success); color:white;
+      box-shadow:0 5px 15px rgba(0,0,0,.2); transform:translateX(120%);
+      transition:transform .3s ease; z-index:2000;
+      animation: slideIn 0.5s ease forwards;
+    }
+    .notification.show { transform:translateX(0) }
+    .notification.error   { background:var(--danger) }
+    .notification.warning { background:var(--warning) }
+    .floating-nav {
+      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      display:flex; gap:10px; background:rgba(30,41,59,.8); backdrop-filter:blur(10px);
+      border-radius:50px; padding:10px; box-shadow:0 5px 15px rgba(0,0,0,.2);
+      z-index:100; border:1px solid rgba(255,255,255,.1);
+    }
+    .light-mode .floating-nav {
+      background:rgba(248,250,252,.8); border:1px solid rgba(203,213,225,.3);
+    }
+    .nav-btn {
+      width:50px; height:50px; border-radius:50%; display:flex;
+      align-items:center; justify-content:center; background:rgba(59,130,246,.2);
+      color:var(--primary); font-size:1.2rem; transition:all .3s;
+    }
+    .light-mode .nav-btn { background:rgba(59,130,246,.1) }
+    .nav-btn.active { background:var(--primary); color:white; transform:translateY(-5px) }
+    .nav-btn:hover { background:var(--primary); color:white }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+    @keyframes fall   { 0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(360deg);opacity:0} }
+    @keyframes pulse  { 0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)} }
+    @keyframes slideIn { from{transform:translateX(100%)}to{transform:translateX(0)} }
+    .confetti {
+      position:fixed; width:10px; height:10px; opacity:0.8;
+      animation:fall 5s linear forwards;
+    }
+    @media (max-width: 640px) {
+      .section { padding: 1rem; }
+      .card { padding: 1rem; }
+      .task-card { margin-bottom: 1rem; }
+      .floating-nav { bottom: 10px; padding: 5px; }
+      .nav-btn { width: 40px; height: 40px; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Theme Toggle -->
+  <div class="theme-toggle" id="theme-toggle">
+    <i class="fas fa-moon text-xl"></i>
+  </div>
+
+  <!-- Notification -->
+  <div class="notification" id="notification">
+    <span id="notification-text">Notification text</span>
+  </div>
+
+  <!-- Login Section -->
+  <div id="login-section" class="section items-center justify-center">
+    <div class="card w-full max-w-md p-8">
+      <div class="text-center mb-8">
+        <div class="w-24 h-24 rounded-full bg-blue-500 mx-auto mb-4 flex items-center justify-center">
+          <i class="fas fa-coins text-white text-4xl"></i>
+        </div>
+        <h1 class="text-3xl font-bold">Tap & Earn</h1>
+        <p class="mt-2 text-gray-400">Complete tasks, earn rewards</p>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Username</label>
+          <input type="text" id="login-username" placeholder="Enter your username" class="w-full p-3 rounded-lg bg-dark-800 border border-dark-700 focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Password</label>
+          <input type="password" id="login-password" placeholder="Enter your password" class="w-full p-3 rounded-lg bg-dark-800 border border-dark-700 focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <button onclick="login()" class="w-full py-3 rounded-lg animated-button font-medium mt-4">Login</button>
+        <div class="text-center mt-4">
+          <p class="text-sm">
+            Don't have an account?
+            <a href="#" onclick="showRegister()" class="text-primary font-medium hover:underline">Register</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Section -->
+  <div id="register-section" class="section items-center justify-center">
+    <div class="card w-full max-w-md p-8">
+      <div class="text-center mb-8">
+        <div class="w-24 h-24 rounded-full bg-orange-500 mx-auto mb-4 flex items-center justify-center">
+          <i class="fas fa-user-plus text-white text-4xl"></i>
+        </div>
+        <h1 class="text-3xl font-bold">Create Account</h1>
+        <p class="mt-2 text-gray-400">Join our rewards program</p>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Username</label>
+          <input type="text" id="register-username" placeholder="Choose a username" class="w-full p-3 rounded-lg bg-dark-800 border border-dark-700 focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Password</label>
+          <input type="password" id="register-password" placeholder="Create a password" class="w-full p-3 rounded-lg bg-dark-800 border border-dark-700 focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Confirm Password</label>
+          <input type="password" id="register-confirm-password" placeholder="Confirm your password" class="w-full p-3 rounded-lg bg-dark-800 border border-dark-700 focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <button onclick="register()" class="w-full py-3 rounded-lg animated-button font-medium mt-4">Register</button>
+        <div class="text-center mt-4">
+          <p class="text-sm">
+            Already have an account?
+            <a href="#" onclick="showLogin()" class="text-primary font-medium hover:underline">Login</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Home Section -->
+  <div id="profile-home-section" class="section">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-8">
+        <div class="w-32 h-32 rounded-full bg-gradient-to-r from-primary to-secondary mx-auto mb-4 flex items-center justify-center">
+          <i class="fas fa-user text-white text-5xl"></i>
+        </div>
+        <h1 class="text-4xl font-bold" id="home-profile-username">Username</h1>
+        <p class="mt-2 text-gray-400">Welcome back to Tap & Earn!</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="card p-6">
+          <h2 class="text-xl font-semibold mb-4">Your Points</h2>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-3xl font-bold text-primary" id="home-profile-points">0</p>
+              <p class="text-gray-400">Current Balance</p>
+            </div>
+            <i class="fas fa-coins text-3xl text-yellow-400"></i>
+          </div>
+        </div>
+        <div class="card p-6">
+          <h2 class="text-xl font-semibold mb-4">Earnings</h2>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-3xl font-bold text-primary" id="home-profile-total">0</p>
+              <p class="text-gray-400">Total Points Earned</p>
+            </div>
+            <i class="fas fa-chart-line text-3xl text-green-400"></i>
+          </div>
+        </div>  
+      </div>
+      <div class="daily-bonus card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 text-white">Daily Login Bonus</h2>
+        <p class="mb-4">Login daily to earn bonus points!</p>
+        <div class="streak-counter">
+          <div class="streak-day active">D1</div>
+          <div class="streak-day">D2</div>
+          <div class="streak-day">D3</div>
+          <div class="streak-day">D4</div>
+          <div class="streak-day">D5</div>
+          <div class="streak-day">D6</div>
+          <div class="streak-day">D7</div>
+        </div>
+        <button class="animated-button w-full py-3 rounded-lg font-medium mt-6">
+          Claim Today's Bonus (25 pts)
+        </button>
+      </div>
+      <button onclick="continueToApp()" class="animated-button w-full py-3 rounded-lg font-medium">
+        Continue to App
+      </button>
+    </div>
+  </div>
+
+  <!-- Main App Section -->
+  <div id="main-app-section" class="section">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold">Welcome, <span id="welcome-username">User</span>!</h1>
+        <div class="flex items-center justify-center gap-2 mt-2">
+          <i class="fas fa-coins text-yellow-400"></i>
+          <span class="font-semibold" id="user-points">0</span>
+          <span class="text-gray-400">points</span>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="card p-6">
+          <h2 class="text-xl font-semibold mb-4">Daily Bonus</h2>
+          <p class="mb-4">Complete your daily streak to earn bonus points!</p>
+          <button class="animated-button w-full py-3 rounded-lg font-medium">
+            Claim Bonus (25 pts)
+          </button>
+        </div>
+        <div class="card p-6">
+          <h2 class="text-xl font-semibold mb-4">Refer Friends</h2>
+          <p class="mb-4">Invite friends and earn 100 points for each referral!</p>
+          <button class="animated-button w-full py-3 rounded-lg font-medium">
+            Get Referral Link
+          </button>
+        </div>
+      </div>
+      <div class="card p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Available Tasks</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="task-list">
+          <!-- tasks injected here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wallet Section -->
+  <div id="wallet-section" class="section">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold mb-8 text-center">Your Wallet</h1>
+      <div class="card p-6 mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Points Balance</h2>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-4xl font-bold text-primary" id="wallet-points">0</p>
+            <p class="text-gray-400">Current Points</p>
+          </div>
+          <i class="fas fa-coins text-4xl text-yellow-400"></i>
+        </div>
+      </div>
+      <div class="card p-6">
+        <h2 class="text-2xl font-semibold mb-4">Transaction History</h2>
+        <div id="transaction-history" class="space-y-4">
+          <!-- Transactions will be appended here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scratch Card Section -->
+  <div id="scratch-card-section" class="section items-center justify-center">
+    <div class="card w-full max-w-md p-8">
+      <h2 class="text-3xl font-bold mb-6 text-center">Daily Scratch Card</h2>
+      <p class="text-center mb-6">Scratch to reveal your daily reward!</p>
+      <div class="relative w-full h-64 bg-dark-800 rounded-lg overflow-hidden">
+        <canvas id="scratch-canvas" width="400" height="256"></canvas>
+        <div id="scratch-result" class="absolute inset-0 flex items-center justify-center text-4xl font-bold text-white" style="display: none;"></div>
+      </div>
+      <button id="scratch-button" class="animated-button w-full py-3 rounded-lg font-medium mt-6">Scratch Now</button>
+    </div>
+  </div>
+
+  <!-- Floating Navigation -->
+  <div id="floating-nav" class="floating-nav" style="display:none">
+    <div class="nav-btn" onclick="showWalletScreen()"><i class="fas fa-wallet"></i></div>
+    <div class="nav-btn active" onclick="showMainApp()"><i class="fas fa-home"></i></div>
+    <div class="nav-btn" onclick="showProfileHome()"><i class="fas fa-user"></i></div>
+    <div class="nav-btn" onclick="showScratchCardScreen()"><i class="fas fa-gem"></i></div>
+  </div>
+
+  <script>
+    // App state
+    let currentUser = null;
+    let currentTaskIndex = null;
+    let selectedOption = null;
+    let foundDifferences = 0;
+    const tasks = [
+      {
+        id: 1,
+        title: "Spot the Differences",
+        description: "Find 5 differences between these two images.",
+        image: "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=600&h=300&q=80",
+        points: 15,
+        options: [
+          { text: "I found all 5 differences", isCorrect: true },
+          { text: "I found 4 differences", isCorrect: false },
+          { text: "I found 3 differences", isCorrect: false },
+          { text: "I found less than 3", isCorrect: false }
+        ]
+      },
+      {
+        id: 2,
+        title: "Counting Challenge",
+        description: "Count the number of apples in the basket.",
+        image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=600&h=300&q=80",
+        points: 10,
+        options: [
+          { text: "12", isCorrect: true },
+          { text: "10", isCorrect: false },
+          { text: "14", isCorrect: false },
+          { text: "11", isCorrect: false }
+        ]
+      },
+      {
+        id: 3,
+        title: "Color Survey",
+        description: "Which color do you prefer for a new app design?",
+        image: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=600&h=300&q=80",
+        points: 8,
+        options: [
+          { text: "Blue", isCorrect: true },
+          { text: "Green", isCorrect: true },
+          { text: "Red", isCorrect: true },
+          { text: "Purple", isCorrect: true }
+        ]
+      },
+      {
+        id: 4,
+        title: "Math Puzzle",
+        description: "Solve this simple math equation.",
+        image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=600&h=300&q=80",
+        points: 12,
+        options: [
+          { text: "24", isCorrect: true },
+          { text: "20", isCorrect: false },
+          { text: "22", isCorrect: false },
+          { text: "18", isCorrect: false }
+        ]
+      },
+      {
+        id: 5,
+        title: "Memory Test",
+        description: "Memorize these items for 5 seconds, then recall what was there.",
+        image: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=600&h=300&q=80",
+        points: 15,
+        options: [
+          { text: "Apple, Book, Clock", isCorrect: true },
+          { text: "Apple, Clock, Book", isCorrect: false },
+          { text: "Book, Apple, Clock", isCorrect: false },
+          { text: "Clock, Book, Apple", isCorrect: false }
+        ]
+      },
+      {
+        id: 6,
+        title: "Pattern Recognition",
+        description: "What comes next in this sequence?",
+        image: "https://images.unsplash.com/photo-1544306094-e2dcf9479da3?auto=format&fit=crop&w=600&h=300&q=80",
+        points: 12,
+        options: [
+          { text: "▲", isCorrect: true },
+          { text: "●", isCorrect: false },
+          { text: "■", isCorrect: false },
+          { text: "◆", isCorrect: false }
+        ]
+      },
+      {
+        id: 7,
+        title: "Logo Identification",
+        description: "Which company does this logo belong to?",
+        image: "https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?auto=format&fit=crop&w=600&h=300&q=80",
+        points: 10,
+        options: [
+          { text: "Apple", isCorrect: true },
+          { text: "Microsoft", isCorrect: false },
+          { text: "Google", isCorrect: false },
+          { text: "Samsung", isCorrect: false }
+        ]
+      },
+      {
+        id: 8,
+        title: "Shape Counting",
+        description: "How many triangles do you see?",
+        image: "https://images.unsplash.com/photo-1589998059171-988d887df646?auto=format&fit=crop&w=600&h=300&q=80",
+        points: 15,
+        options: [
+          { text: "8", isCorrect: true },
+          { text: "7", isCorrect: false },
+          { text: "9", isCorrect: false },
+          { text: "6", isCorrect: false }
+        ]
+      }
+    ];
+
+    // show/hide sections & nav
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+      document.getElementById(id).style.display = 'flex';
+      document.getElementById('floating-nav').style.display = 
+        (id === 'login-section' || id === 'register-section') ? 'none' : 'flex';
+    }
+
+    // theme toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+      const icon = themeToggle.querySelector('i');
+      if (document.body.classList.contains('light-mode')) {
+        icon.classList.replace('fa-moon', 'fa-sun');
+        showNotification('Light mode enabled');
+      } else {
+        icon.classList.replace('fa-sun', 'fa-moon');
+        showNotification('Dark mode enabled');
+      }
+      localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+    });
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light-mode');
+      themeToggle.querySelector('i').classList.replace('fa-moon', 'fa-sun');
+    }
+
+    // notification
+    function showNotification(msg, type = 'success') {
+      const n = document.getElementById('notification');
+      document.getElementById('notification-text').textContent = msg;
+      n.className = 'notification show';
+      if (type === 'error') n.classList.add('error');
+      if (type === 'warning') n.classList.add('warning');
+      setTimeout(() => n.className = 'notification', 3000);
+    }
+
+    // confetti
+    function createConfetti() {
+      const colors = ['#3b82f6', '#f97316', '#10b981', '#f59e0b', '#ef4444'];
+      for (let i = 0; i < 100; i++) {
+        const d = document.createElement('div');
+        d.className = 'confetti';
+        d.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        d.style.left = `${Math.random() * 100}vw`;
+        d.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+        document.body.appendChild(d);
+        setTimeout(() => d.remove(), 5000);
+      }
+    }
+
+    // auth
+    function login() {
+      const u = document.getElementById('login-username').value.trim();
+      const p = document.getElementById('login-password').value;
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = users.find(x => x.username === u && x.password === p);
+      if (user) {
+        currentUser = user;
+        showProfileHome();
+        showNotification(`Welcome back, ${u}!`);
+      } else showNotification('Invalid credentials', 'error');
+    }
+    function register() {
+      const u = document.getElementById('register-username').value.trim();
+      const p = document.getElementById('register-password').value;
+      const cp = document.getElementById('register-confirm-password').value;
+      if (!u || !p) { showNotification('Fill all fields', 'error'); return }
+      if (p !== cp) { showNotification('Passwords mismatch', 'error'); return }
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      if (users.some(x => x.username === u)) { showNotification('Username taken', 'error'); return }
+      const nu = { username: u, password: p, points: 100, totalPoints: 100, history: [], streak: 1, lastScratch: null };
+      users.push(nu);
+      localStorage.setItem('users', JSON.stringify(users));
+      currentUser = nu;
+      showProfileHome();
+      showNotification('Account created! +100 pts');
+    }
+
+    function updateProfileHome() {
+      document.getElementById('home-profile-username').textContent = currentUser.username;
+      document.getElementById('home-profile-points').textContent = currentUser.points;
+      document.getElementById('home-profile-total').textContent = currentUser.totalPoints;
+    }
+
+    // tasks
+    function loadTasks() {
+      const c = document.getElementById('task-list');
+      c.innerHTML = '';
+      tasks.forEach((t, i) => {
+        const d = document.createElement('div');
+        d.className = 'task-card';
+        d.innerHTML = `
+          <div class="task-image-container">
+            <img src="${t.image}" alt="">
+            <div class="points-badge pulse">${t.points} pts</div>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold text-lg mb-2">${t.title}</h4>
+            <p class="text-sm mb-4">${t.description}</p>
+            <button onclick="startTask(${i})" class="animated-button w-full py-2 rounded-lg text-sm">Start Task</button>
+          </div>`;
+        c.appendChild(d);
+      });
+    }
+    function startTask(i) {
+      currentTaskIndex = i;
+      selectedOption = null;
+      const t = tasks[i];
+      const s = document.createElement('div');
+      s.id = 'task-screen';
+      s.className = 'section items-center justify-center';
+      s.innerHTML = `
+        <div class="card w-full max-w-2xl p-6">
+          <h2 class="text-2xl font-bold mb-4 text-center">${t.title}</h2>
+          <p class="text-center mb-6">${t.description}</p>
+          <div class="task-image-container mb-6"><img src="${t.image}" alt=""></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6" id="task-options">
+            ${t.options.map((o, idx) => `<div class="option-card" onclick="selectOption(${idx})"><p>${o.text}</p></div>`).join('')}
+          </div>
+          <div class="flex gap-4">
+            <button onclick="backToHome()" class="flex-1 py-3 rounded-lg bg-dark-700 hover:bg-dark-600">Cancel</button>
+            <button onclick="submitTaskAnswer()" class="flex-1 py-3 rounded-lg animated-button">Submit</button>
+          </div>
+        </div>`;
+      document.body.appendChild(s);
+      showSection('task-screen');
+    }
+    function selectOption(i) {
+      selectedOption = i;
+      document.querySelectorAll('.option-card').forEach((el, idx) => {
+        el.classList.toggle('selected', idx === i);
+      });
+    }
+    function submitTaskAnswer() {
+      if (selectedOption === null) { showNotification('Select an option', 'error'); return }
+      const t = tasks[currentTaskIndex];
+      const correct = t.options[selectedOption].isCorrect;
+      const pts = correct ? t.points : 1;
+      awardPoints(pts, `Task: ${t.title}`);
+      showNotification(correct ? `Correct! +${pts} pts` : `Try again! +${pts} pt`);
+      setTimeout(backToHome, 2000);
+    }
+    function animatePoints(element, start, end, duration) {
+      let startTime = null;
+      const step = (timestamp) => {
+        if (!startTime) startTime = timestamp;
+        const progress = timestamp - startTime;
+        const value = Math.min(start + (end - start) * (progress / duration), end);
+        element.textContent = Math.floor(value);
+        if (progress < duration) {
+          requestAnimationFrame(step);
+        }
+      };
+      requestAnimationFrame(step);
+    }
+    function awardPoints(pts, desc) {
+      const oldPoints = currentUser.points;
+      currentUser.points += pts;
+      currentUser.totalPoints += pts;
+      currentUser.history.push({ desc, pts, date: new Date().toLocaleString() });
+      updateUserData();
+      animatePoints(document.getElementById('user-points'), oldPoints, currentUser.points, 1000);
+      if (pts > 5) createConfetti();
+    }
+    function backToHome() {
+      document.getElementById('task-screen')?.remove();
+      showMainApp();
+    }
+    function updateUserData() {
+      const us = JSON.parse(localStorage.getItem('users') || '[]');
+      const idx = us.findIndex(x => x.username === currentUser.username);
+      if (idx > -1) { us[idx] = currentUser; localStorage.setItem('users', JSON.stringify(us)) }
+    }
+
+    // Wallet Screen
+    function updateWallet() {
+      document.getElementById('wallet-points').textContent = currentUser.points;
+      const historyDiv = document.getElementById('transaction-history');
+      historyDiv.innerHTML = '';
+      currentUser.history.forEach(transaction => {
+        const transactionItem = document.createElement('div');
+        transactionItem.className = 'flex justify-between items-center p-4 bg-dark-800 rounded-lg';
+        transactionItem.innerHTML = `
+          <span>${transaction.desc}</span>
+          <span class="${transaction.pts > 0 ? 'text-green-400' : 'text-red-400'}">${transaction.pts > 0 ? '+' : ''}${transaction.pts} pts</span>
+        `;
+        historyDiv.appendChild(transactionItem);
+      });
+    }
+    function showWalletScreen() {
+      updateWallet();
+      showSection('wallet-section');
+    }
+
+    // Scratch Card Screen
+    function initScratchCard() {
+      const today = new Date().toDateString();
+      if (currentUser.lastScratch === today) {
+        document.getElementById('scratch-button').disabled = true;
+        showNotification('You have already scratched today', 'warning');
+        return;
+      }
+      const canvas = document.getElementById('scratch-canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#666';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const prize = Math.floor(Math.random() * 100) + 1;
+      document.getElementById('scratch-result').textContent = `${prize} pts`;
+      let isScratching = false;
+      canvas.addEventListener('mousedown', () => isScratching = true);
+      canvas.addEventListener('mouseup', () => isScratching = false);
+      canvas.addEventListener('mousemove', scratch);
+      canvas.addEventListener('touchstart', () => isScratching = true);
+      canvas.addEventListener('touchend', () => isScratching = false);
+      canvas.addEventListener('touchmove', scratch);
+      function scratch(event) {
+        if (!isScratching) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = (event.type.includes('touch') ? event.touches[0].clientX : event.clientX) - rect.left;
+        const y = (event.type.includes('touch') ? event.touches[0].clientY : event.clientY) - rect.top;
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.arc(x, y, 20, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      document.getElementById('scratch-button').addEventListener('click', () => {
+        document.getElementById('scratch-result').style.display = 'flex';
+        awardPoints(prize, 'Scratch Card Reward');
+        showNotification(`You won ${prize} points!`, 'success');
+        currentUser.lastScratch = today;
+        updateUserData();
+        document.getElementById('scratch-button').disabled = true;
+        canvas.removeEventListener('mousemove', scratch);
+        canvas.removeEventListener('touchmove', scratch);
+      });
+    }
+    function showScratchCardScreen() {
+      initScratchCard();
+      showSection('scratch-card-section');
+    }
+
+    // navigation
+    function showLogin()    { showSection('login-section')    }
+    function showRegister() { showSection('register-section') }
+    function showProfileHome() { updateProfileHome(); showSection('profile-home-section') }
+    function showMainApp()  { showSection('main-app-section'); loadTasks() }
+    function continueToApp() {
+      document.getElementById('welcome-username').textContent = currentUser.username;
+      document.getElementById('user-points').textContent = currentUser.points;
+      showMainApp();
+    }
+
+    // init
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('users')) {
+        localStorage.setItem('users', JSON.stringify([{ username: 'demo', password: 'demo', points: 500, totalPoints: 500, history: [], streak: 3, lastScratch: null }]));
+      }
+      showLogin();
+    });
+  </script>
+</body>
+</html>
