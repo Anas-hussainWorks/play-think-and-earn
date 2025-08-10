@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tap & Earn - Complete Tasks, Win Rewards</title>
+  <title>Tap & Earn - Unlimited Rewards</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=pub-4511149915896415" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <script>
     tailwind.config = {
@@ -121,12 +120,182 @@
       position:fixed; width:10px; height:10px; opacity:0.8;
       animation:fall 5s linear forwards;
     }
+    .streak-day {
+      width: 40px; height: 40px; border-radius: 50%; 
+      background: rgba(59,130,246,.2); display: flex;
+      align-items: center; justify-content: center;
+      font-weight: bold; transition: all 0.3s;
+    }
+    .streak-day.active {
+      background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+      color: white; transform: scale(1.1);
+    }
+    .streak-counter {
+      display: flex; justify-content: space-between; 
+      margin-top: 20px;
+    }
+    .progress-bar {
+      height: 10px; background: rgba(255,255,255,.1);
+      border-radius: 5px; overflow: hidden; margin: 10px 0;
+    }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      border-radius: 5px; width: 60%; 
+      animation: progressFill 1.5s ease-out;
+    }
+    @keyframes progressFill {
+      from { width: 0; }
+    }
+    .floating-points {
+      position: absolute; color: #f59e0b; font-weight: bold;
+      font-size: 1.2rem; animation: floatUp 1s ease-out forwards;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-50px); opacity: 0; }
+    }
+    .glowing {
+      animation: glow 1.5s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { box-shadow: 0 0 5px -5px #f59e0b; }
+      to { box-shadow: 0 0 20px 5px #f59e0b; }
+    }
+    .bounce {
+      animation: bounce 0.5s ease infinite alternate;
+    }
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
+    }
+    .option-card {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .option-card.selected {
+      background: var(--primary);
+      color: white;
+      border-color: white;
+      transform: scale(1.03);
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.5);
+    }
+    .option-card.selected::after {
+      content: "✓";
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .option-card:hover {
+      background: rgba(59, 130, 246, 0.3);
+    }
+    .success-animation {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
+    }
+    .success-animation::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 5px solid transparent;
+      border-top-color: var(--success);
+      animation: spin 1s linear infinite;
+    }
+    .success-animation::after {
+      content: "✓";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 40px;
+      color: var(--success);
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .redeem-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .redeem-tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      border-radius: 10px;
+      background: rgba(30,41,59,.5);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .redeem-tab.active {
+      background: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    }
+    .redeem-content {
+      display: none;
+    }
+    .redeem-content.active {
+      display: block;
+      animation: fadeIn 0.5s;
+    }
+    .qr-container {
+      width: 200px;
+      height: 200px;
+      margin: 20px auto;
+      padding: 10px;
+      background: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-placeholder {
+      width: 180px;
+      height: 180px;
+      background: linear-gradient(45deg, #f1f1f1, #e0e0e0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+      border-radius: 5px;
+    }
+    .counter {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+    }
     @media (max-width: 640px) {
       .section { padding: 1rem; }
       .card { padding: 1rem; }
       .task-card { margin-bottom: 1rem; }
       .floating-nav { bottom: 10px; padding: 5px; }
       .nav-btn { width: 40px; height: 40px; font-size: 1rem; }
+      .streak-day { width: 30px; height: 30px; font-size: 0.8rem; }
     }
   </style>
 </head>
@@ -145,7 +314,7 @@
   <div id="login-section" class="section items-center justify-center">
     <div class="card w-full max-w-md p-8">
       <div class="text-center mb-8">
-        <div class="w-24 h-24 rounded-full bg-blue-500 mx-auto mb-4 flex items-center justify-center">
+        <div class="w-24 h-24 rounded-full bg-blue-500 mx-auto mb-4 flex items-center justify-center bounce">
           <i class="fas fa-coins text-white text-4xl"></i>
         </div>
         <h1 class="text-3xl font-bold">Tap & Earn</h1>
@@ -175,7 +344,7 @@
   <div id="register-section" class="section items-center justify-center">
     <div class="card w-full max-w-md p-8">
       <div class="text-center mb-8">
-        <div class="w-24 h-24 rounded-full bg-orange-500 mx-auto mb-4 flex items-center justify-center">
+        <div class="w-24 h-24 rounded-full bg-orange-500 mx-auto mb-4 flex items-center justify-center bounce">
           <i class="fas fa-user-plus text-white text-4xl"></i>
         </div>
         <h1 class="text-3xl font-bold">Create Account</h1>
@@ -209,7 +378,7 @@
   <div id="profile-home-section" class="section">
     <div class="max-w-4xl mx-auto">
       <div class="text-center mb-8">
-        <div class="w-32 h-32 rounded-full bg-gradient-to-r from-primary to-secondary mx-auto mb-4 flex items-center justify-center">
+        <div class="w-32 h-32 rounded-full bg-gradient-to-r from-primary to-secondary mx-auto mb-4 flex items-center justify-center glowing">
           <i class="fas fa-user text-white text-5xl"></i>
         </div>
         <h1 class="text-4xl font-bold" id="home-profile-username">Username</h1>
@@ -240,6 +409,9 @@
       <div class="daily-bonus card p-6 mb-8">
         <h2 class="text-xl font-semibold mb-4 text-white">Daily Login Bonus</h2>
         <p class="mb-4">Login daily to earn bonus points!</p>
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
         <div class="streak-counter">
           <div class="streak-day active">D1</div>
           <div class="streak-day">D2</div>
@@ -249,7 +421,7 @@
           <div class="streak-day">D6</div>
           <div class="streak-day">D7</div>
         </div>
-        <button class="animated-button w-full py-3 rounded-lg font-medium mt-6">
+        <button onclick="claimDailyBonus()" class="animated-button w-full py-3 rounded-lg font-medium mt-6">
           Claim Today's Bonus (25 pts)
         </button>
       </div>
@@ -273,8 +445,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div class="card p-6">
           <h2 class="text-xl font-semibold mb-4">Daily Bonus</h2>
-          <p class="mb-4">Complete your daily streak to earn bonus points!</p>
-          <button class="animated-button w-full py-3 rounded-lg font-medium">
+          <p class="mb-4">Login daily to earn bonus points!</p>
+          <button onclick="claimDailyBonus()" class="animated-button w-full py-3 rounded-lg font-medium">
             Claim Bonus (25 pts)
           </button>
         </div>
@@ -288,8 +460,9 @@
       </div>
       <div class="card p-6 mb-8">
         <h2 class="text-xl font-semibold mb-4">Available Tasks</h2>
+        <p class="mb-4 text-center">Complete any task as many times as you want to earn 10 points each time!</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="task-list">
-          <!-- tasks injected here -->
+          <!-- Tasks will be injected here -->
         </div>
       </div>
     </div>
@@ -309,7 +482,68 @@
           <i class="fas fa-coins text-4xl text-yellow-400"></i>
         </div>
       </div>
+      
+      <!-- Redeem Section -->
       <div class="card p-6">
+        <h2 class="text-2xl font-semibold mb-4">Redeem Points</h2>
+        <p class="mb-6">Convert your points to real money or redeem for gift cards</p>
+        
+        <div class="redeem-tabs">
+          <div class="redeem-tab active" data-tab="upi">UPI Payment</div>
+          <div class="redeem-tab" data-tab="code">Redeem Code</div>
+        </div>
+        
+        <div class="redeem-content active" id="upi-content">
+          <div class="mb-4">
+            <label class="block mb-2">Enter Amount (₹)</label>
+            <input type="number" id="redeem-amount" class="w-full p-3 rounded-lg bg-dark-800 border border-dark-700 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Min ₹10" min="10">
+            <p class="text-sm mt-2">Conversion Rate: 100 points = ₹1</p>
+            <p class="text-sm">Points required: <span id="points-required">0</span></p>
+          </div>
+          
+          <div class="mb-4">
+            <label class="block mb-2">UPI ID</label>
+            <input type="text" id="upi-id" class="w-full p-3 rounded-lg bg-dark-800 border border-dark-700 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="yourname@upi">
+          </div>
+          
+          <div class="text-center">
+            <div class="qr-container">
+              <div class="qr-placeholder">
+                Scan this QR to verify UPI ID<br>
+                <i class="fas fa-qrcode text-4xl mt-2"></i>
+              </div>
+            </div>
+            <p class="text-sm mt-2">Scan QR code to verify your UPI ID</p>
+          </div>
+          
+          <button onclick="requestUPIRedemption()" class="animated-button w-full py-3 rounded-lg font-medium mt-6">
+            Request Payment
+          </button>
+        </div>
+        
+        <div class="redeem-content" id="code-content">
+          <div class="mb-4">
+            <label class="block mb-2">Enter Redeem Code</label>
+            <input type="text" id="redeem-code" class="w-full p-3 rounded-lg bg-dark-800 border border-dark-700 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. GIFT50">
+          </div>
+          
+          <div class="mb-6">
+            <p class="text-sm">Example codes:</p>
+            <div class="flex gap-2 mt-2">
+              <div class="px-3 py-1 bg-dark-800 rounded-lg">WELCOME100</div>
+              <div class="px-3 py-1 bg-dark-800 rounded-lg">GIFT50</div>
+              <div class="px-3 py-1 bg-dark-800 rounded-lg">BONUS25</div>
+            </div>
+          </div>
+          
+          <button onclick="redeemCode()" class="animated-button w-full py-3 rounded-lg font-medium">
+            Redeem Code
+          </button>
+        </div>
+      </div>
+      
+      <!-- Transaction History -->
+      <div class="card p-6 mt-8">
         <h2 class="text-2xl font-semibold mb-4">Transaction History</h2>
         <div id="transaction-history" class="space-y-4">
           <!-- Transactions will be appended here -->
@@ -328,6 +562,17 @@
         <div id="scratch-result" class="absolute inset-0 flex items-center justify-center text-4xl font-bold text-white" style="display: none;"></div>
       </div>
       <button id="scratch-button" class="animated-button w-full py-3 rounded-lg font-medium mt-6">Scratch Now</button>
+    </div>
+  </div>
+  
+  <!-- Redemption Success Screen -->
+  <div id="redemption-success" class="section items-center justify-center" style="display:none">
+    <div class="card w-full max-w-md p-8 text-center">
+      <div class="success-animation"></div>
+      <h2 class="text-3xl font-bold mb-4 mt-6">Redemption Request Sent!</h2>
+      <p class="mb-6">Your request to redeem <span id="success-points" class="font-bold">0</span> points has been submitted successfully.</p>
+      <p class="mb-6">You will receive the payment within 24 hours after approval.</p>
+      <button onclick="showWalletScreen()" class="animated-button w-full py-3 rounded-lg font-medium">Back to Wallet</button>
     </div>
   </div>
 
@@ -351,12 +596,12 @@
         title: "Spot the Differences",
         description: "Find 5 differences between these two images.",
         image: "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=600&h=300&q=80",
-        points: 15,
+        points: 10,
         options: [
-          { text: "I found all 5 differences", isCorrect: true },
-          { text: "I found 4 differences", isCorrect: false },
-          { text: "I found 3 differences", isCorrect: false },
-          { text: "I found less than 3", isCorrect: false }
+          { text: "I found all 5 differences" },
+          { text: "I found 4 differences" },
+          { text: "I found 3 differences" },
+          { text: "I found less than 3" }
         ]
       },
       {
@@ -366,10 +611,10 @@
         image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=600&h=300&q=80",
         points: 10,
         options: [
-          { text: "12", isCorrect: true },
-          { text: "10", isCorrect: false },
-          { text: "14", isCorrect: false },
-          { text: "11", isCorrect: false }
+          { text: "12" },
+          { text: "10" },
+          { text: "14" },
+          { text: "11" }
         ]
       },
       {
@@ -377,12 +622,12 @@
         title: "Color Survey",
         description: "Which color do you prefer for a new app design?",
         image: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=600&h=300&q=80",
-        points: 8,
+        points: 10,
         options: [
-          { text: "Blue", isCorrect: true },
-          { text: "Green", isCorrect: true },
-          { text: "Red", isCorrect: true },
-          { text: "Purple", isCorrect: true }
+          { text: "Blue" },
+          { text: "Green" },
+          { text: "Red" },
+          { text: "Purple" }
         ]
       },
       {
@@ -390,12 +635,12 @@
         title: "Math Puzzle",
         description: "Solve this simple math equation.",
         image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=600&h=300&q=80",
-        points: 12,
+        points: 10,
         options: [
-          { text: "24", isCorrect: true },
-          { text: "20", isCorrect: false },
-          { text: "22", isCorrect: false },
-          { text: "18", isCorrect: false }
+          { text: "24" },
+          { text: "20" },
+          { text: "22" },
+          { text: "18" }
         ]
       },
       {
@@ -403,12 +648,12 @@
         title: "Memory Test",
         description: "Memorize these items for 5 seconds, then recall what was there.",
         image: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=600&h=300&q=80",
-        points: 15,
+        points: 10,
         options: [
-          { text: "Apple, Book, Clock", isCorrect: true },
-          { text: "Apple, Clock, Book", isCorrect: false },
-          { text: "Book, Apple, Clock", isCorrect: false },
-          { text: "Clock, Book, Apple", isCorrect: false }
+          { text: "Apple, Book, Clock" },
+          { text: "Apple, Clock, Book" },
+          { text: "Book, Apple, Clock" },
+          { text: "Clock, Book, Apple" }
         ]
       },
       {
@@ -416,41 +661,24 @@
         title: "Pattern Recognition",
         description: "What comes next in this sequence?",
         image: "https://images.unsplash.com/photo-1544306094-e2dcf9479da3?auto=format&fit=crop&w=600&h=300&q=80",
-        points: 12,
-        options: [
-          { text: "▲", isCorrect: true },
-          { text: "●", isCorrect: false },
-          { text: "■", isCorrect: false },
-          { text: "◆", isCorrect: false }
-        ]
-      },
-      {
-        id: 7,
-        title: "Logo Identification",
-        description: "Which company does this logo belong to?",
-        image: "https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?auto=format&fit=crop&w=600&h=300&q=80",
         points: 10,
         options: [
-          { text: "Apple", isCorrect: true },
-          { text: "Microsoft", isCorrect: false },
-          { text: "Google", isCorrect: false },
-          { text: "Samsung", isCorrect: false }
-        ]
-      },
-      {
-        id: 8,
-        title: "Shape Counting",
-        description: "How many triangles do you see?",
-        image: "https://images.unsplash.com/photo-1589998059171-988d887df646?auto=format&fit=crop&w=600&h=300&q=80",
-        points: 15,
-        options: [
-          { text: "8", isCorrect: true },
-          { text: "7", isCorrect: false },
-          { text: "9", isCorrect: false },
-          { text: "6", isCorrect: false }
+          { text: "▲" },
+          { text: "●" },
+          { text: "■" },
+          { text: "◆" }
         ]
       }
     ];
+
+    // Redeemable codes
+    const redeemCodes = {
+      "WELCOME100": 1000,
+      "GIFT50": 500,
+      "BONUS25": 250,
+      "REWARD200": 2000,
+      "CASH50": 500
+    };
 
     // show/hide sections & nav
     function showSection(id) {
@@ -458,6 +686,12 @@
       document.getElementById(id).style.display = 'flex';
       document.getElementById('floating-nav').style.display = 
         (id === 'login-section' || id === 'register-section') ? 'none' : 'flex';
+      // Update nav buttons
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      if (id === 'main-app-section') document.querySelector('.nav-btn:nth-child(2)').classList.add('active');
+      if (id === 'wallet-section') document.querySelector('.nav-btn:nth-child(1)').classList.add('active');
+      if (id === 'profile-home-section') document.querySelector('.nav-btn:nth-child(3)').classList.add('active');
+      if (id === 'scratch-card-section') document.querySelector('.nav-btn:nth-child(4)').classList.add('active');
     }
 
     // theme toggle
@@ -503,6 +737,17 @@
       }
     }
 
+    // floating points animation
+    function showFloatingPoints(element, points) {
+      const pointsEl = document.createElement('div');
+      pointsEl.className = 'floating-points';
+      pointsEl.textContent = `+${points} pts`;
+      pointsEl.style.left = `${element.getBoundingClientRect().left + element.offsetWidth/2}px`;
+      pointsEl.style.top = `${element.getBoundingClientRect().top + element.offsetHeight/2}px`;
+      document.body.appendChild(pointsEl);
+      setTimeout(() => pointsEl.remove(), 1000);
+    }
+
     // auth
     function login() {
       const u = document.getElementById('login-username').value.trim();
@@ -523,12 +768,23 @@
       if (p !== cp) { showNotification('Passwords mismatch', 'error'); return }
       const users = JSON.parse(localStorage.getItem('users') || '[]');
       if (users.some(x => x.username === u)) { showNotification('Username taken', 'error'); return }
-      const nu = { username: u, password: p, points: 100, totalPoints: 100, history: [], streak: 1, lastScratch: null };
+      const nu = { 
+        username: u, 
+        password: p, 
+        points: 1000, 
+        totalPoints: 1000, 
+        history: [
+          { desc: 'Welcome bonus', pts: 1000, date: new Date().toLocaleString() }
+        ], 
+        streak: 1, 
+        lastScratch: null,
+        lastDailyBonus: null
+      };
       users.push(nu);
       localStorage.setItem('users', JSON.stringify(users));
       currentUser = nu;
       showProfileHome();
-      showNotification('Account created! +100 pts');
+      showNotification('Account created! +1000 pts');
     }
 
     function updateProfileHome() {
@@ -540,13 +796,18 @@
     // tasks
     function loadTasks() {
       const c = document.getElementById('task-list');
+      if (!c) {
+        console.error('Task list container not found');
+        return;
+      }
       c.innerHTML = '';
+      
       tasks.forEach((t, i) => {
         const d = document.createElement('div');
-        d.className = 'task-card';
+        d.className = `task-card`;
         d.innerHTML = `
           <div class="task-image-container">
-            <img src="${t.image}" alt="">
+            <img src="${t.image}" alt="${t.title}">
             <div class="points-badge pulse">${t.points} pts</div>
           </div>
           <div class="p-4">
@@ -557,7 +818,13 @@
         c.appendChild(d);
       });
     }
+    
     function startTask(i) {
+      if (!currentUser) {
+        showNotification('Please login first', 'error');
+        return;
+      }
+      
       currentTaskIndex = i;
       selectedOption = null;
       const t = tasks[i];
@@ -568,9 +835,13 @@
         <div class="card w-full max-w-2xl p-6">
           <h2 class="text-2xl font-bold mb-4 text-center">${t.title}</h2>
           <p class="text-center mb-6">${t.description}</p>
-          <div class="task-image-container mb-6"><img src="${t.image}" alt=""></div>
+          <div class="task-image-container mb-6"><img src="${t.image}" alt="${t.title}"></div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6" id="task-options">
-            ${t.options.map((o, idx) => `<div class="option-card" onclick="selectOption(${idx})"><p>${o.text}</p></div>`).join('')}
+            ${t.options.map((o, idx) => `
+              <div class="option-card p-4 rounded-lg bg-dark-700 cursor-pointer text-center" onclick="selectOption(${idx})">
+                <p>${o.text}</p>
+              </div>
+            `).join('')}
           </div>
           <div class="flex gap-4">
             <button onclick="backToHome()" class="flex-1 py-3 rounded-lg bg-dark-700 hover:bg-dark-600">Cancel</button>
@@ -580,21 +851,33 @@
       document.body.appendChild(s);
       showSection('task-screen');
     }
+    
     function selectOption(i) {
       selectedOption = i;
       document.querySelectorAll('.option-card').forEach((el, idx) => {
         el.classList.toggle('selected', idx === i);
       });
     }
+    
     function submitTaskAnswer() {
-      if (selectedOption === null) { showNotification('Select an option', 'error'); return }
+      if (selectedOption === null) { 
+        showNotification('Select an option', 'error'); 
+        return;
+      }
+      
       const t = tasks[currentTaskIndex];
-      const correct = t.options[selectedOption].isCorrect;
-      const pts = correct ? t.points : 1;
+      const pts = t.points; // Always 10 points
+      
+      // Show floating points
+      const button = document.querySelector('.option-card.selected');
+      if (button) showFloatingPoints(button, pts);
+      
       awardPoints(pts, `Task: ${t.title}`);
-      showNotification(correct ? `Correct! +${pts} pts` : `Try again! +${pts} pt`);
-      setTimeout(backToHome, 2000);
+      showNotification(`+${pts} points earned!`);
+      
+      setTimeout(backToHome, 1500);
     }
+    
     function animatePoints(element, start, end, duration) {
       let startTime = null;
       const step = (timestamp) => {
@@ -608,23 +891,46 @@
       };
       requestAnimationFrame(step);
     }
+    
     function awardPoints(pts, desc) {
       const oldPoints = currentUser.points;
       currentUser.points += pts;
       currentUser.totalPoints += pts;
       currentUser.history.push({ desc, pts, date: new Date().toLocaleString() });
       updateUserData();
+      
+      // Update points in all sections
       animatePoints(document.getElementById('user-points'), oldPoints, currentUser.points, 1000);
+      document.getElementById('wallet-points').textContent = currentUser.points;
+      document.getElementById('home-profile-points').textContent = currentUser.points;
+      document.getElementById('home-profile-total').textContent = currentUser.totalPoints;
+      
       if (pts > 5) createConfetti();
     }
+    
     function backToHome() {
       document.getElementById('task-screen')?.remove();
       showMainApp();
     }
+    
     function updateUserData() {
       const us = JSON.parse(localStorage.getItem('users') || '[]');
       const idx = us.findIndex(x => x.username === currentUser.username);
       if (idx > -1) { us[idx] = currentUser; localStorage.setItem('users', JSON.stringify(us)) }
+    }
+
+    // Daily bonus
+    function claimDailyBonus() {
+      const today = new Date().toDateString();
+      if (currentUser.lastDailyBonus === today) {
+        showNotification('You already claimed your daily bonus today', 'warning');
+        return;
+      }
+      
+      awardPoints(25, 'Daily Login Bonus');
+      showNotification('Daily bonus claimed! +25 points');
+      currentUser.lastDailyBonus = today;
+      updateUserData();
     }
 
     // Wallet Screen
@@ -632,19 +938,114 @@
       document.getElementById('wallet-points').textContent = currentUser.points;
       const historyDiv = document.getElementById('transaction-history');
       historyDiv.innerHTML = '';
-      currentUser.history.forEach(transaction => {
+      currentUser.history.slice().reverse().forEach(transaction => {
         const transactionItem = document.createElement('div');
         transactionItem.className = 'flex justify-between items-center p-4 bg-dark-800 rounded-lg';
         transactionItem.innerHTML = `
-          <span>${transaction.desc}</span>
-          <span class="${transaction.pts > 0 ? 'text-green-400' : 'text-red-400'}">${transaction.pts > 0 ? '+' : ''}${transaction.pts} pts</span>
+          <div>
+            <div class="font-medium">${transaction.desc}</div>
+            <div class="text-xs text-gray-400">${transaction.date}</div>
+          </div>
+          <span class="${transaction.pts > 0 ? 'text-green-400' : 'text-red-400'} font-bold">${transaction.pts > 0 ? '+' : ''}${transaction.pts} pts</span>
         `;
         historyDiv.appendChild(transactionItem);
       });
+      
+      // Setup redeem tabs
+      document.querySelectorAll('.redeem-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelector('.redeem-tab.active').classList.remove('active');
+          tab.classList.add('active');
+          
+          document.querySelector('.redeem-content.active').classList.remove('active');
+          document.getElementById(`${tab.dataset.tab}-content`).classList.add('active');
+        });
+      });
+      
+      // Setup points calculation for UPI
+      const amountInput = document.getElementById('redeem-amount');
+      amountInput.addEventListener('input', () => {
+        const amount = parseFloat(amountInput.value) || 0;
+        document.getElementById('points-required').textContent = amount * 100;
+      });
     }
+    
     function showWalletScreen() {
       updateWallet();
       showSection('wallet-section');
+    }
+    
+    // Redemption Functions
+    function requestUPIRedemption() {
+      const amount = parseFloat(document.getElementById('redeem-amount').value);
+      const upiId = document.getElementById('upi-id').value.trim();
+      const pointsRequired = amount * 100;
+      
+      if (!amount || amount < 10) {
+        showNotification('Minimum redemption amount is ₹10', 'error');
+        return;
+      }
+      
+      if (!upiId || !upiId.includes('@')) {
+        showNotification('Please enter a valid UPI ID', 'error');
+        return;
+      }
+      
+      if (pointsRequired > currentUser.points) {
+        showNotification('Insufficient points for this redemption', 'error');
+        return;
+      }
+      
+      // Create redemption request
+      const request = {
+        id: Date.now(),
+        user: currentUser.username,
+        type: 'UPI',
+        amount,
+        points: pointsRequired,
+        upiId,
+        status: 'Pending',
+        date: new Date().toLocaleString()
+      };
+      
+      // Store redemption request in local storage
+      let requests = JSON.parse(localStorage.getItem('redemptionRequests') || []);
+      requests.push(request);
+      localStorage.setItem('redemptionRequests', JSON.stringify(requests));
+      
+      // Deduct points from user
+      awardPoints(-pointsRequired, `Redemption Request: UPI ₹${amount}`);
+      
+      // Show success screen
+      document.getElementById('success-points').textContent = pointsRequired;
+      showSection('redemption-success');
+      
+      // Show notification to admin
+      console.log(`ADMIN NOTIFICATION: New redemption request from ${currentUser.username}`);
+      console.log(`- Amount: ₹${amount}`);
+      console.log(`- UPI ID: ${upiId}`);
+      console.log(`- Request ID: ${request.id}`);
+    }
+    
+    function redeemCode() {
+      const code = document.getElementById('redeem-code').value.trim().toUpperCase();
+      
+      if (!code) {
+        showNotification('Please enter a redeem code', 'error');
+        return;
+      }
+      
+      if (!redeemCodes[code]) {
+        showNotification('Invalid redeem code', 'error');
+        return;
+      }
+      
+      const points = redeemCodes[code];
+      awardPoints(points, `Redeem Code: ${code}`);
+      showNotification(`Code redeemed! +${points} points`, 'success');
+      
+      // Reset input
+      document.getElementById('redeem-code').value = '';
     }
 
     // Scratch Card Screen
@@ -689,6 +1090,7 @@
         canvas.removeEventListener('touchmove', scratch);
       });
     }
+    
     function showScratchCardScreen() {
       initScratchCard();
       showSection('scratch-card-section');
@@ -697,19 +1099,47 @@
     // navigation
     function showLogin()    { showSection('login-section')    }
     function showRegister() { showSection('register-section') }
-    function showProfileHome() { updateProfileHome(); showSection('profile-home-section') }
-    function showMainApp()  { showSection('main-app-section'); loadTasks() }
-    function continueToApp() {
+    function showProfileHome() { 
+      updateProfileHome(); 
+      showSection('profile-home-section') 
+    }
+    function showMainApp()  { 
+      showSection('main-app-section'); 
       document.getElementById('welcome-username').textContent = currentUser.username;
       document.getElementById('user-points').textContent = currentUser.points;
+      loadTasks();
+    }
+    function continueToApp() {
       showMainApp();
     }
 
     // init
     document.addEventListener('DOMContentLoaded', () => {
       if (!localStorage.getItem('users')) {
-        localStorage.setItem('users', JSON.stringify([{ username: 'demo', password: 'demo', points: 500, totalPoints: 500, history: [], streak: 3, lastScratch: null }]));
+        localStorage.setItem('users', JSON.stringify([
+          { 
+            username: 'demo', 
+            password: 'demo', 
+            points: 2500, 
+            totalPoints: 2500, 
+            history: [
+              { desc: 'Welcome bonus', pts: 1000, date: new Date().toLocaleString() },
+              { desc: 'Daily login', pts: 25, date: new Date().toLocaleString() },
+              { desc: 'Task: Math Puzzle', pts: 10, date: new Date().toLocaleString() },
+              { desc: 'Scratch Card', pts: 50, date: new Date().toLocaleString() }
+            ], 
+            streak: 3, 
+            lastScratch: null,
+            lastDailyBonus: null
+          }
+        ]));
       }
+      
+      // Initialize redemption requests if not exists
+      if (!localStorage.getItem('redemptionRequests')) {
+        localStorage.setItem('redemptionRequests', JSON.stringify([]));
+      }
+      
       showLogin();
     });
   </script>
